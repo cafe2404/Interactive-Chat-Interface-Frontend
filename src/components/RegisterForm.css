@@ -1,0 +1,185 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden; /* Tránh trường hợp ảnh bị tràn ra ngoài */
+    position: relative;
+}
+
+.background-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Giúp ảnh luôn bao phủ toàn bộ section */
+    position: absolute; /* Đặt ảnh làm nền */
+    top: 0;
+    left: 0;
+    animation: animateBg 5s linear infinite; /* Áp dụng hiệu ứng */
+}
+
+/* Giúp hình ảnh đổi màu */
+/* @keyframes animateBg {
+    100% {
+        filter: hue-rotate(360deg)
+    }
+} */
+
+/* Giúp hình ảnh đổi màu và đổi độ sáng */
+@keyframes animateBg {
+    0% {
+        filter: hue-rotate(0deg) brightness(100%);
+    }
+    50% {
+        filter: hue-rotate(180deg) brightness(120%);
+    }
+    100% {
+        filter: hue-rotate(360deg) brightness(100%);
+    }
+}
+
+.register-box {
+    position: relative;
+    width: 720px;
+    height: 500px;
+    background: transparent;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(15px);
+
+    opacity: 0;
+    animation: zoomIn 1s ease forwards;
+    animation-delay: 0s;
+}
+
+h2 {
+    font-size: 2em;
+    color: #fff;
+    text-align: center;
+}
+
+.input-box {
+    position: relative;
+    width: 310px;
+    margin: 30px 0;
+    border-bottom: 2px solid #fff;
+}
+
+.input-box label {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    font-size: 1em;
+    color: #fff;
+    pointer-events: none;
+    transition: 0.5s;
+}
+
+.input-box input:focus~label,
+.input-box input:valid~label {
+    top: -5px;
+}
+
+.form-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    max-width: 650px;
+    margin: auto;
+}
+
+.column {
+    width: 48%;
+    padding: 0px 0px 40px 0px;
+}
+
+.input-box input {
+    width: 100%;
+    height: 50px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1em;
+    color: #fff;
+    padding: 0 35px 0 5px;
+}
+
+.form-select {
+    width: 100%;
+    height: 48px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #fff;
+    outline: none;
+    font-size: 1em;
+    color: #fff;
+    padding: 2px 0px 2px 0px;
+    margin-top: 2.7px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    line-height: 2.2em;
+}
+
+.form-label {
+    display: block; /* Để label chiếm trọn 1 dòng */
+    padding-top: 18px;  /* Khoảng cách trên */
+    padding-bottom: 75px; /* Khoảng cách dưới */
+    color: #fff; /* (nếu bạn muốn chữ trắng cho đồng bộ nền) */
+    font-size: 1em; /* Kích thước chữ */
+}
+
+option.option {
+    background-color: rgba(92, 87, 87, 0.314); /* nền trắng trong suốt 10% */
+    color: black;
+}
+
+button {
+    width: 100%;
+    height: 40px;
+    background: #fff;
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 1em;
+    color: #000;
+    font-weight: 500;
+}
+
+@media (max-width: 360px) {
+    .register-box {
+        width: 100%;
+        height: 100vh;
+        border: none;
+        border-radius: 0;
+    }
+
+    .input-box {
+        width: 290px;
+    }
+}
+
+@keyframes zoomIn {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
