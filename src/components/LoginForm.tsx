@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { login } from '../services/auth';
 import { IoMailSharp } from "react-icons/io5";
@@ -17,15 +18,21 @@ const LoginForm = () => {
         e.preventDefault();
         try {
           const data = await login(email_or_phone, password);
-          toast.success(data.EM)
-          console.log(data)
+          console.log('Login response:', data);
 
           // Nếu đăng nhập thành công thì chuyển hướng
-          if (data && data.EC === 0) {  // Giả sử EC = 0 là thành công
-            // Chờ 5.8 giây rồi mới chuyển trang
+          if (data && data.EC === 0) {  // EC = 0 là thành công
+            toast.success(data.EM);
+            
+            // Store user info in localStorage for chat service
+            localStorage.setItem('userInfo', JSON.stringify(data));
+            
+            // Chờ 2 giây rồi chuyển trang (giảm từ 5.8 giây)
             setTimeout(() => {
               navigate('/chat');
-            }, 5800); // 6000 ms = 5.8 giây
+            }, 2000);
+          } else {
+            toast.error(data.EM || 'Login failed');
           }
         } 
         catch (err: any) {

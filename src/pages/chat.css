@@ -549,6 +549,14 @@ section {
     background: #fff !important;
     text-align: left !important;
 }
+.message time {
+    color: white;
+    margin-left: 12px;
+    margin-top: 14px;
+    display: block;
+    font-size: 12px;
+}
+
 
 .message.friend_message p::before {
     content: '';
