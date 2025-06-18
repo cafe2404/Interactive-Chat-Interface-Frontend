@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom'
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { IoMailSharp } from "react-icons/io5";
+import backgroundImage from '../assets/bg2.jpg';
 
 const RegisterForm = () => {
     const [company_name, setCompany_name] = useState('');
@@ -40,7 +41,8 @@ const RegisterForm = () => {
 
     return (
         <section>
-            <img src="/bg2.jpg" alt="Background Image" className="background-img" />
+            {/* <img src="/bg2.jpg" alt="Background Image" className="background-img" /> */}
+            <img src={backgroundImage} alt="Background Image" className="background-img" />
             <div className="register-box">
                 <form onSubmit={handleSubmit}>
                     <h2>Register</h2>

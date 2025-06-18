@@ -13,6 +13,18 @@ import { FaItalic } from "react-icons/fa";
 import { FaUnderline } from "react-icons/fa";
 import { HiMiniPaintBrush } from "react-icons/hi2";
 import React from 'react';
+import backgroundImage from '../assets/bg1.jpg'
+import lythanhdatAvatar from '../assets/img1.png'
+import ngocTranAvatar from '../assets/img2.png'
+import userAvatar from '../assets/user.png'
+import axios from 'axios';
+
+interface User {
+    id: number;
+    name: string;
+    email: string;
+    user_image: string | null;
+}
 
 interface Message {
     text: string;
@@ -20,17 +32,60 @@ interface Message {
     isMyMessage: boolean;
 }
 
+
 const Chat = () => {
     const [showSearch, setShowSearch] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
     const [showSidebarRight, setShowSidebarRight] = useState(false);
     const [isSidebarHiding, setIsSidebarHiding] = useState(false);
-    // const [message, setMessage] = useState('');
     const [messages, setMessages] = useState<Message[]>([]);
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
     const searchRef = useRef<HTMLDivElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const messageRef = useRef<HTMLDivElement>(null);
+    const hasLoggedRef = useRef(false)
+    const hasFetchedUsersRef = useRef(false)
+
+    useEffect(() => {
+        // Fetch all users only once
+        const fetchUsers = async () => {
+            if (!hasFetchedUsersRef.current) {
+                try {
+                    const response = await axios.get('http://localhost:8000/api/users/');
+                    console.log('All Users Information:', response.data);
+                    hasFetchedUsersRef.current = true;
+                } catch (error) {
+                    console.error('Error fetching users:', error);
+                    hasFetchedUsersRef.current = true;
+                }
+            }
+        };
+
+        fetchUsers();
+
+        if (!hasLoggedRef.current) {
+            const userInfo = localStorage.getItem('userInfo');
+            if (userInfo) {
+                const parsedUserInfo = JSON.parse(userInfo);
+                console.log('Current Logged-in User Information:', parsedUserInfo);
+                // Lấy thông tin user trực tiếp từ response của API login
+                if (parsedUserInfo.DT) {
+                    const userData = parsedUserInfo.DT;
+                    console.log('User Data from DT:', userData);
+                    console.log('User Image Path:', userData.user_image);
+                    
+                    setCurrentUser({
+                        id: userData.id,
+                        name: userData.name,
+                        email: userData.email,
+                        user_image: userData.user_image || null
+                    });
+                }
+                hasLoggedRef.current = true;
+            }
+        }
+    }, []);
 
     const handleSearchClick = () => {
         if (showSearch) {
@@ -76,12 +131,10 @@ const Chat = () => {
             };
             setMessages([...messages, newMessage]);
             
-            // setMessage('');
             if (messageRef.current) {
                 messageRef.current.innerHTML = '';
             }
             
-            // Scroll to bottom after sending message
             setTimeout(() => {
                 if (contentRef.current) {
                     contentRef.current.scrollTop = contentRef.current.scrollHeight;
@@ -93,7 +146,6 @@ const Chat = () => {
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
-            // Create a new message with the file
             const newMessage = {
                 text: `Đã tải lên file: ${file.name}`,
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -101,12 +153,10 @@ const Chat = () => {
             };
             setMessages([...messages, newMessage]);
             
-            // Reset file input
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
 
-            // Scroll to bottom after uploading file
             setTimeout(() => {
                 if (contentRef.current) {
                     contentRef.current.scrollTop = contentRef.current.scrollHeight;
@@ -121,12 +171,12 @@ const Chat = () => {
 
     return (
         <section>
-            <img src="/bg1.jpg" alt="Background Image" className="background" />
+            <img src={backgroundImage} alt="Background Image" className="background" />
             <div className="container">
                 <div className="sidebar-left">
                     <div className="nav-tab">
                         <div className="imgbx">
-                            <img src="/user.png" className='cover' />
+                            <img src={userAvatar} className='cover' />
                         </div>
                         <div className="icons">
                             <GiNothingToSay />
@@ -143,11 +193,11 @@ const Chat = () => {
                         <div className='footer'>
                             <div className='block'>
                                 <div className="imgbx">
-                                    <img src="/img1.png" className='cover' />
+                                    <img src={lythanhdatAvatar} className='cover' />
                                 </div>
                                 <div className='details'>
                                     <div className='listHead'>
-                                        <h4>Tony Lee</h4>
+                                        <h4>Lý Thành Đạt</h4>
                                         <p className='time'>yesterday</p>
                                     </div>
                                     <div className='message_p'>
@@ -158,128 +208,7 @@ const Chat = () => {
 
                             <div className='block'>
                                 <div className="imgbx">
-                                    <img src="/img2.png" className='cover' />
-                                </div>
-                                <div className='details'>
-                                    <div className='listHead'>
-                                        <h4>Ngọc Trân</h4>
-                                        <p className='time'>yesterday</p>
-                                    </div>
-                                    <div className='message_p'>
-                                        <p>How to make Interactive Chat Interface using Python and TypeScript</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className='block'>
-                                <div className="imgbx">
-                                    <img src="/img1.png" className='cover' />
-                                </div>
-                                <div className='details'>
-                                    <div className='listHead'>
-                                        <h4>Tony Lee</h4>
-                                        <p className='time'>yesterday</p>
-                                    </div>
-                                    <div className='message_p'>
-                                        <p>How to make Interactive Chat Interface using Python and TypeScript</p>
-                                        <b>1</b>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className='block'>
-                                <div className="imgbx">
-                                    <img src="/img2.png" className='cover' />
-                                </div>
-                                <div className='details'>
-                                    <div className='listHead'>
-                                        <h4>Ngọc Trân</h4>
-                                        <p className='time'>yesterday</p>
-                                    </div>
-                                    <div className='message_p'>
-                                        <p>How to make Interactive Chat Interface using Python and TypeScript</p>
-                                    </div>
-                                </div>
-                            </div>                            
-                            
-                            <div className='block'>
-                                <div className="imgbx">
-                                    <img src="/img1.png" className='cover' />
-                                </div>
-                                <div className='details'>
-                                    <div className='listHead'>
-                                        <h4>Tony Lee</h4>
-                                        <p className='time'>yesterday</p>
-                                    </div>
-                                    <div className='message_p'>
-                                        <p>How to make Interactive Chat Interface using Python and TypeScript</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className='block'>
-                                <div className="imgbx">
-                                    <img src="/img2.png" className='cover' />
-                                </div>
-                                <div className='details'>
-                                    <div className='listHead'>
-                                        <h4>Ngọc Trân</h4>
-                                        <p className='time'>yesterday</p>
-                                    </div>
-                                    <div className='message_p'>
-                                        <p>How to make Interactive Chat Interface using Python and TypeScript</p>
-                                    </div>
-                                </div>
-                            </div>                            
-                            
-                            <div className='block'>
-                                <div className="imgbx">
-                                    <img src="/img1.png" className='cover' />
-                                </div>
-                                <div className='details'>
-                                    <div className='listHead'>
-                                        <h4>Tony Lee</h4>
-                                        <p className='time'>yesterday</p>
-                                    </div>
-                                    <div className='message_p'>
-                                        <p>How to make Interactive Chat Interface using Python and TypeScript</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className='block'>
-                                <div className="imgbx">
-                                    <img src="/img2.png" className='cover' />
-                                </div>
-                                <div className='details'>
-                                    <div className='listHead'>
-                                        <h4>Ngọc Trân</h4>
-                                        <p className='time'>yesterday</p>
-                                    </div>
-                                    <div className='message_p'>
-                                        <p>How to make Interactive Chat Interface using Python and TypeScript</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className='block'>
-                                <div className="imgbx">
-                                    <img src="/img1.png" className='cover' />
-                                </div>
-                                <div className='details'>
-                                    <div className='listHead'>
-                                        <h4>Tony Lee</h4>
-                                        <p className='time'>yesterday</p>
-                                    </div>
-                                    <div className='message_p'>
-                                        <p>How to make Interactive Chat Interface using Python and TypeScript</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className='block'>
-                                <div className="imgbx">
-                                    <img src="/img2.png" className='cover' />
+                                    <img src={ngocTranAvatar} className='cover' />
                                 </div>
                                 <div className='details'>
                                     <div className='listHead'>
@@ -299,7 +228,7 @@ const Chat = () => {
                     <div className='header'>
                         <div className="imgText">
                             <div className="userimg">
-                                <img src="/img2.png" className="cover" />
+                                <img src={ngocTranAvatar} className='cover' />
                             </div>
                             <h4>Ngọc Trân<br/><span>online</span></h4>
                         </div>
@@ -338,100 +267,6 @@ const Chat = () => {
                                 Cho anh gởi nhé.
                                 <br/>
                                 <span>09:01</span>
-                            </p>
-                        </div>
-
-                        <div className="message friend_message">
-                            <p>
-                                Trước anh đi làm có MST cá nhân chưa ạ?
-                                <br/>
-                                <span>09:02</span>
-                            </p>
-                        </div>
-
-                        <div className="message my_message">
-                            <p>
-                                Anh có MST thuế. <br/>
-                                Nhưng để ở nhà, nên giờ không nhớ.
-                                <br/>
-                                <span>09:03</span>
-                            </p>
-                        </div>
-
-                        <div className="message friend_message">
-                            <p>
-                                dạ tối anh xem lại giúp em nhé
-                                <br/>
-                                <span>09:04</span>
-                            </p>
-                        </div>
-
-                        <div className="message my_message">
-                            <p>
-                                Ok em nhé.
-                                <br/>
-                                <span>09:05</span>
-                            </p>
-                        </div>
-
-                        <div className="time">
-                            <span>9:48 16/05/2024</span>
-                            <br/>
-                        </div>
-                        <div className="message friend_message">
-                            <p>
-                                Em gởi mail rồi anh nhé
-                                <br/>
-                                <span>09:48</span>
-                            </p>
-                        </div>
-
-                        <div className="time">
-                            <span>13:41 16/05/2024</span>
-                            <br/>
-                        </div>
-                        <div className="message my_message">
-                            <p>
-                                em nên kết bạn với số này đi <br/>
-                                0777598007
-                                <br/>
-                                <span>13:41</span>
-                            </p>
-                        </div>
-
-                        <div className="time">
-                            <span>11:19 02/08/2024</span>
-                            <br/>
-                        </div>
-                        <div className="message my_message">
-                            <p>
-                                Có gì mình nhắn qua chỗ này đi.
-                                <br/>
-                                <span>11:19</span>
-                            </p>
-                        </div>
-
-                        <div className="message friend_message">
-                            <p>
-                                zalo cá nhân của anh
-                                <br/>
-                                <span>11:19</span>
-                            </p>
-                        </div>
-
-                        <div className="message my_message">
-                            <p>
-                                Công việc thì nhắn qua bên kia.
-                                <br/>
-                                <span>11:19</span>
-                            </p>
-                        </div>
-
-                        <div className="message friend_message">
-                            <p>
-                                ủa vậy luôn
-                                <br/>
-                                <span>11:20</span>
                             </p>
                         </div>
 

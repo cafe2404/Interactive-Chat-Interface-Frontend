@@ -5,6 +5,7 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import './LoginForm.css'
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom'
+import backgroundImage from '../assets/bg.jpg';
 
 const LoginForm = () => {
     const [email_or_phone, setEmail_or_phone] = useState('');
@@ -34,7 +35,8 @@ const LoginForm = () => {
 
     return (
         <section>
-            <img src="/bg.jpg" alt="Background Image" className="background-img" />
+            {/* <img src="/bg.jpg" alt="Background Image" className="background-img" /> */}
+            <img src={backgroundImage} alt="Background Image" className="background-img" />
             <div className="login-box">
                 <form onSubmit={handleSubmit}>
                     <h2>Login</h2>
